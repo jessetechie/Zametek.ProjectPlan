@@ -197,7 +197,7 @@ namespace Zametek.ViewModel.ProjectPlan
                     {
                         // For every dependency that is also a parent task, add all its children as dependencies.
 
-                        foreach (var descendantTask in GetDescendantTasks(pred.PredecessorTask))
+                        foreach (var descendantTask in GetDescendantTasks(pred.TargetTask))
                         {
                             var descendantTaskId = descendantTask.ID;
 
@@ -205,7 +205,7 @@ namespace Zametek.ViewModel.ProjectPlan
                                 && id != descendantTaskId)
                             {
                                 var builder = new Relation.Builder(mpxjProjectFile);
-                                builder.PredecessorTask(descendantTask);
+                                builder.TargetTask(descendantTask);
                                 builder.Type(RelationType.StartFinish);
                                 builder.Lag(Duration.GetInstance(0.0, mpxjTask.Duration.Units.GetValueOrDefault()));
                                 mpxjTask.AddPredecessor(builder);
@@ -224,7 +224,7 @@ namespace Zametek.ViewModel.ProjectPlan
                     if (!s_FilterTaskIds.Contains(parentId))
                     {
                         var builder = new Relation.Builder(mpxjProjectFile);
-                        builder.PredecessorTask(parentTask);
+                        builder.TargetTask(parentTask);
                         builder.Type(RelationType.StartFinish);
                         builder.Lag(Duration.GetInstance(0.0, mpxjTask.Duration.Units.GetValueOrDefault()));
                         mpxjTask.AddPredecessor(builder);
@@ -386,7 +386,7 @@ namespace Zametek.ViewModel.ProjectPlan
             {
                 foreach (Relation pred in preds.AsEnumerable())
                 {
-                    int? dependentTaskId = pred.PredecessorTask?.ID;
+                    int? dependentTaskId = pred.TargetTask?.ID;
 
                     if (dependentTaskId is not null)
                     {
